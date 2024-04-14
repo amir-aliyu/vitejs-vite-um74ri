@@ -16,10 +16,10 @@
            <v-text-field
             v-show="showTitle"
             v-model="newTask.title"
-            class="title-input"
+            class=".error-input .v-input__control"
             label="Title"
-            :class="{'error-input': !isTitleUnique}"
-            :rules="[() => !!newTask.title.trim() || 'Title is required']"
+            :class="{'error-input': true}"
+            :rules="[() => !!newTask.title.trim() || 'Title is required', () => isTitleUnique.value || 'Title must be unique']"
           ></v-text-field>
            <!--make sure its unique tho-->
            <span v-if="!isTitleUnique" class="error-message">Title must be unique</span>
@@ -45,7 +45,7 @@
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
  
-          <v-btn color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
+          <v-btn type="submit" color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
             <i class="fa-solid fa-circle-plus"></i>
             <v-icon icon="fa-check" />
             <v-icon icon="fas fa-home" />
@@ -108,7 +108,6 @@ const newTask = ref({
 });
 
 
-
 const checkTitleUnique = (task, tableRows) => {
   tableRows.value.forEach((title) => {
     alert("um");
@@ -119,13 +118,18 @@ const checkTitleUnique = (task, tableRows) => {
   });
 };
 
+
+
 const uniqueTitle = (newTask, tableRows) => {
   for(let i = 0; i < tableRows.length; i++) {
     if (newTask.value.title == tableRows[i].title) {
-      alert("title not unique")
+      
+      isTitleUnique.value = false;
+      alert("title not unique" + isTitleUnique.value)
       return false;
     }
   }
+  isTitleUnique.value = true;
   return true;
 }
 
@@ -198,7 +202,7 @@ const addTask = (index, showTitle, tableRows) => {
           formSubmitted.value = true;
         } else {
           // add error message to the title textbox
-        // document.querySelector('.title-input').classList.add('error-input');
+         //document.querySelector('.title-input').classList.add('error-input');
         }
     }
   
