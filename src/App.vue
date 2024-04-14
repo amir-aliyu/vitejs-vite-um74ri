@@ -30,7 +30,7 @@
           @update:isEditDialog="isEditDialog = $event" 
         />
     
-         <!-- Add v-snackbar component -->
+         <!-- for notifications -->
          <v-snackbar
           v-model="snackbar.show"
           :color="snackbar.color"
@@ -39,8 +39,6 @@
         >
           {{ snackbar.message }}
         </v-snackbar>
-
-
 
     <v-table>
       <!-- headers for if its an add task -->
@@ -171,8 +169,7 @@ const openAddTaskDialog = (isAdd, index) => {
     whichIcon.value = "mdi mdi-update";
    // alert("task index=" + index + "and task index value "+ taskIndex.value);
   }
-  
- // isEditDialog.value = isEdit;
+ 
 };
 
 // Method to close the add task dialog

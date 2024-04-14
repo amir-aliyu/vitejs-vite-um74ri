@@ -84,14 +84,6 @@ const hasPriority = ref(false);
 const isAddDialog = ref(true);
 const isEditDialog = ref(false);
 
-const onIsAddDialogChange = (value) => {
-  isAddDialog.value = value;
-};
-
-const onIsEditDialogChange = (value) => {
-  isEditDialog.value = value;
-};
-
 // Define a reactive object for the new task
 const newTask = ref({
   title: '',
@@ -214,13 +206,7 @@ const addTask = (index, showTitle, tableRows) => {
           
           showSnackbar('Task added successfully', 'success');
 
-   
-
-
-        } else {
-          // add error message to the title textbox
-         //document.querySelector('.title-input').classList.add('error-input');
-        }
+        } 
     }
   
 };
@@ -232,10 +218,6 @@ const cancelAddTask = () => {
   formSubmitted.value = false;
 };
 
-// Method to close the add task dialog
-const closeAddTaskDialog = () => {
-  isAddDialogVisible.value = false;
-};
 </script>
 
 <style>
