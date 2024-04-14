@@ -173,11 +173,11 @@ const noTask = () => {
 
 // Method to handle updating task
 const updateTask = (index, task) => {
-  isEditDialog.value = true;
+  isEditDialog.value = true; // Set isEditDialog to true for editing
   console.log(task);
   console.log(tableRows.value[index]);
   tableRows.value[index] = task;
-  openAddTaskDialog(true);
+  openAddTaskDialog(true); // Pass true to indicate it's an edit dialog
   console.log('task' + index + ' is to be updated');
 };
 
