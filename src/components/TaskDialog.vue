@@ -1,10 +1,10 @@
 <template>
   <v-dialog v-model="isAddDialogVisible" max-width="500px">
     <v-card>
-      <v-card-title v-if="isEditDialog">
+      <v-card-title v-show="isEditDialog">
         <span class="headline">Edit Task</span>
       </v-card-title>
-      <v-card-title v-else>
+      <v-card-title v-show="isAddDialog">
         <span class="headline">Add Task</span>
       </v-card-title>
       <v-card-text>

@@ -7,20 +7,18 @@
         <button class="btn btn-primary" @click="openAddTaskDialog">
           <i class="bi bi-plus"></i> Add
         </button>
-        <button class="btn btn-primary" @click="openAddTaskDialog">
-          <i class="bi bi-plus"></i> Edit
-        </button>
         <button class="btn btn-primary" @click="addSampleTask">
           <i class="bi bi-plus"></i> new sample task
         </button>
 
         <TaskDialog
-          v-if="isAddDialogOpen"
-          @add-task="addTask"
-          @no-task="closeAddTaskDialog"
-          @close="closeAddTaskDialog"
-          :is-edit-dialog="isEditDialog.value"
-        />
+  v-if="isAddDialogOpen"
+  @add-task="addTask"
+  @no-task="closeAddTaskDialog"
+  @close="closeAddTaskDialog"
+  @isAddDialog="isAddDialog"
+    @isEditDialog="isEditDialog"
+/>
 
         <!-- TaskDialog Component -->
         <!--<TaskDialog
@@ -133,6 +131,8 @@ const isAddDialogOpen = ref(false);
 // Define whether it's an add or edit dialog
 const isEditDialog = ref(true);
 
+const isAddDialog = ref(true);
+
 // Define your table rows data
 const tableRows = ref([]);
 
@@ -160,7 +160,8 @@ const sampleTask = {
 
 // Method to handle adding task
 const addTask = (task) => {
-  isEditDialog.value = false;
+  isAddDialog.value = true; // Corrected
+  isEditDialog.value = false; // Corrected
   tableRows.value.push(task);
   closeAddTaskDialog();
   showSnackbar('Task added successfully', 'success');
@@ -170,6 +171,7 @@ const addTask = (task) => {
 const noTask = () => {
   closeAddTaskDialog();
 };
+
 
 // Method to handle updating task
 const updateTask = (index, task) => {
