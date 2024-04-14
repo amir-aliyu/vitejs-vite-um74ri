@@ -16,13 +16,12 @@
            <v-text-field
             v-show="showTitle"
             v-model="newTask.title"
-            class=".error-input .v-input__control"
+         
             label="Title"
-            :class="{'error-input': true}"
+            
             :rules="[() => !!newTask.title.trim() || 'Title is required', () => isTitleUnique.value || 'Title must be unique']"
           ></v-text-field>
-           <!--make sure its unique tho-->
-           <span v-if="!isTitleUnique" class="error-message">Title must be unique</span>
+      
        
           <!-- do not display title if it is not add -->
           <v-textarea
