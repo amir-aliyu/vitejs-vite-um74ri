@@ -155,9 +155,9 @@ const openAddTaskDialog = (isAdd, index) => {
     showTitle.value = false;
     whichButton.value = "Edit";
     addedOrUpdated.value = "edited";
-    isAddOrEdit.value = "Edit Task " + index;
+    isAddOrEdit.value = "Edit Task";
     taskIndex.value = index;
-    whichIcon.value = "mdi mdi-close-circle-outline";
+    whichIcon.value = "mdi mdi-update";
    // alert("task index=" + index + "and task index value "+ taskIndex.value);
   }
   
@@ -183,14 +183,11 @@ const sampleTask = {
 const addTask = (task, index) => {
   //taskIndex.value = index;
   isAddOrEdit.value = "Add Task from app.vue";
-  isAddDialog.value = true; // Corrected
-  isEditDialog.value = false; // Corrected
+  isAddDialog.value = true; 
+  isEditDialog.value = false; 
   if(taskIndex.value < 0) {
     tableRows.value.push(task);
-    //alert("app thinks task index is: "+ taskIndex.value);
   } else {
-
-    //alert("this is an editing operation my friend");
     tableRows.value[taskIndex.value] = task;
   }
   
@@ -206,10 +203,8 @@ const addTask = (task, index) => {
 
 const deleteTask = (index) => {
   tableRows.value.splice(index, 1);
-  // Show snackbar notification
   showSnackbar('Task deleted successfully', 'success');
 
-  console.log('task' + index + 'must be deleted with extreme prejudice');
 };
 
 // Method to update task completion
@@ -220,10 +215,6 @@ const updateCompletion = (index) => {
   // Toggle the showUpdateButton property based on the updated completion status
   tableRows.value[index].showUpdateButton = !tableRows.value[index].isComplete;
 
-  // Log the update
-  console.log(
-    `Updating completion for task at index ${index}: ${tableRows.value[index].isComplete}`
-  );
 };
 
 

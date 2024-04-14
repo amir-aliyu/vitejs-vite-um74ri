@@ -2,10 +2,8 @@
   <v-dialog v-model="isAddDialogVisible" max-width="500px" persistent>
    
     <v-card>
-      
-      <v-card-title>
-        <span class="headline">{{ isAddOrEdit }}</span>
-      </v-card-title>
+        <v-banner :icon ="whichIcon" id="taskBanner" bg-color="primary" lines="one">
+            <div id="taskText">{{ isAddOrEdit }}</div> </v-banner>
       <v-card-text >
         <v-form @submit.prevent="addTask">
            <v-text-field
@@ -103,16 +101,6 @@ const newTask = ref({
   priority: '',
 });
 
-const checkTitleUnique = (task, tableRows) => {
-  tableRows.value.forEach((title) => {
-    alert("um");
-    // check if input task title is the same as any title in table rows
-    if (task.title === title) {
-      alert("Duplicate found");
-    } 
-  });
-};
-
 const uniqueTitle = (newTask, tableRows) => {
   for(let i = 0; i < tableRows.length; i++) {
     if (newTask.value.title == tableRows[i].title) {
@@ -145,7 +133,6 @@ const validateDescription = (newTask) => {
   }
 }
 
-
 const validateDeadline = (newTask) => {
   if (newTask.value.deadline.trim() !== '') {
     hasDeadline.value = true;
@@ -169,18 +156,7 @@ const validatePriority = (newTask) => {
 
 // Method to add a new task
 const addTask = (index, showTitle, tableRows) => {
-  // Set formSubmitted to true to indicate form submission
-  //alert("task index from taskDialog's add task:" + taskIndex.value);
   formSubmitted.value = true;
-  //isAddOrEdit = "Add Task from app";
-  //alert(index + " title?" + showTitle);
-  //alert(index);
-  //alert("rows = "+ tableRows);
-
-  // if the index is greater than -1, instead of pushing the task to the
-  // array, instead edit the current task index
-   // If showTitle is false, set the newTask.title to its current title
-   
 
   // If the form is valid, emit 'add-task' event
     // If showTitle is false, set the newTask.title to its current title
@@ -270,5 +246,13 @@ const closeAddTaskDialog = () => {
   border-radius: 4px !important; /* Regular border radius */
   padding: 8px 12px !important; /* Regular padding */
   font-size: 16px !important; /* Regular font size */
+}
+#taskBanner {
+  font-size: 25px;
+ 
+}
+#taskText {
+  margin-left: 1em;
+  margin-right:5em;
 }
 </style>
