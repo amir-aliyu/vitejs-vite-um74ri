@@ -35,11 +35,11 @@
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
  
-          <v-btn :prepend-icon="whichIcon" type="submit" color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
+          <v-btn id="right-btn" :prepend-icon="whichIcon" type="submit" color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
             {{ whichButton }}</v-btn
           >
            <!-- Cancel button -->
-          <v-btn color="red" prepend-icon="mdi mdi-close-circle-outline" @click="cancelAddTask">Cancel</v-btn>
+          <v-btn id="cancel" color="red" prepend-icon="mdi mdi-close-circle-outline" @click="cancelAddTask">Cancel</v-btn>
         </v-form>
       </v-card-text>
     </v-card>
@@ -255,4 +255,13 @@ const closeAddTaskDialog = () => {
   margin-left: 1em;
   margin-right:5em;
 }
+#right-btn {
+  margin-left: 8em;
+
+}
+#cancel {
+  margin-left: 1em;
+  margin-right:1em;
+}
+
 </style>
