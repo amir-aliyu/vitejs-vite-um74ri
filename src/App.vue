@@ -16,8 +16,13 @@
   @add-task="addTask"
   @no-task="closeAddTaskDialog"
   @close="closeAddTaskDialog"
-  @isAddDialog="isAddDialog"
-    @isEditDialog="isEditDialog"
+  :data-from-parent="dataToSendToChild"
+  :isAddOrEdit = "isAddOrEdit"
+  :isAddDialog="isAddDialog" 
+  :isEditDialog="isEditDialog" 
+ 
+  @update:isAddDialog="isAddDialog = $event" 
+  @update:isEditDialog="isEditDialog = $event" 
 />
 
         <!-- TaskDialog Component -->
@@ -58,7 +63,7 @@
               <div class="col">
                 <template v-if="!row.isComplete">
                   <!--if the item is not complete, then can be edited-->
-                  <v-btn color="primary" @click="updateTask(rowIndex, row)">
+                  <v-btn color="primary" @click="openAddTaskDialog(false, rowIndex)">
                     Update
                   </v-btn>
                 </template>
@@ -97,6 +102,10 @@ import HelloWorld from './components/HelloWorld.vue';
 import { VCard, VCardText, VCardTitle } from 'vuetify/components/VCard';
 import 'vuetify/dist/vuetify.min.css';
 
+// testing can send data ovah 
+const dataToSendToChild = 'Data from App.vue!!';
+//const isAddOrEdit = "Add Task";
+
 // Snackbar state
 const snackbar = ref({
   show: false,
@@ -128,6 +137,8 @@ const tableColumns = [
 // Define ref for isAddDialogOpen
 const isAddDialogOpen = ref(false);
 
+const isAddOrEdit = ref("Add Task default");
+
 // Define whether it's an add or edit dialog
 const isEditDialog = ref(true);
 
@@ -138,9 +149,15 @@ const tableRows = ref([]);
 
 // Method to open the add task dialog
 // Method to open the add task dialog
-const openAddTaskDialog = (isEdit) => {
+const openAddTaskDialog = (isEdit, index) => {
   isAddDialogOpen.value = true;
-  isEditDialog.value = isEdit;
+  if(isEdit) {
+    isAddOrEdit.value = "Add Task";
+  } else {
+    isAddOrEdit.value = "Edit Task " + index;
+  }
+  
+ // isEditDialog.value = isEdit;
 };
 
 // Method to close the add task dialog
@@ -160,6 +177,7 @@ const sampleTask = {
 
 // Method to handle adding task
 const addTask = (task) => {
+  isAddOrEdit.value = "Add Task from app.vue";
   isAddDialog.value = true; // Corrected
   isEditDialog.value = false; // Corrected
   tableRows.value.push(task);
@@ -174,13 +192,22 @@ const noTask = () => {
 
 
 // Method to handle updating task
-const updateTask = (index, task) => {
-  isEditDialog.value = true; // Set isEditDialog to true for editing
-  console.log(task);
-  console.log(tableRows.value[index]);
-  tableRows.value[index] = task;
-  openAddTaskDialog(true); // Pass true to indicate it's an edit dialog
-  console.log('task' + index + ' is to be updated');
+// Method to handle updating task
+const updateTask = (task, index) => {
+  isAddOrEdit = "Update Task";
+  //isEditDialog = true;
+  console.log(dataToSendToChild);
+  alert("update task" + index)
+  // Set isEditDialog to true for editing
+  //emits('update:isEditDialog', true);
+  //openAddTaskDialog(false); // Pass true to indicate it's an edit dialog
+  //console.log('task' + index + ' is to be updated');
+ // isEditDialog.value = true;
+ // console.log(task);
+ // console.log(tableRows.value[index]);
+ // tableRows.value[index] = task;
+  // Emit event to update isEditDialog in TaskDialog.vue
+ 
 };
 
 const deleteTask = (index) => {

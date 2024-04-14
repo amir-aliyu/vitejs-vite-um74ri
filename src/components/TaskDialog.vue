@@ -1,14 +1,16 @@
 <template>
   <v-dialog v-model="isAddDialogVisible" max-width="500px">
+   
     <v-card>
-      <v-card-title v-show="isEditDialog">
-        <span class="headline">Edit Task</span>
+      
+     
+      <v-card-title>
+        <span class="headline">{{ isAddOrEdit }}</span>
       </v-card-title>
-      <v-card-title v-show="isAddDialog">
-        <span class="headline">Add Task</span>
-      </v-card-title>
-      <v-card-text>
+      <v-card-text >
         <v-form @submit.prevent="addTask">
+           <!-- Print the value of dataFromParent -->
+           <p>{{ dataFromParent }}</p>
           <v-text-field
             v-model="newTask.title"
             label="Title"
@@ -20,6 +22,7 @@
             :rules="[() => !!newTask.title.trim() || 'Title is required']"
           ></v-textarea>
           <v-text-field
+          v-show="isAddDialog" 
             v-model="newTask.deadline"
             label="Deadline"
             type="date"
@@ -31,17 +34,13 @@
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
 
-          <v-btn color="primary" @click="submitTask">
-            {{ isEdit ? 'Update' : 'Add' }} Task
-          </v-btn>
-          <v-btn color="red" @click="cancelTask">Cancel</v-btn>
-
           <v-btn color="primary" @click="addTask">
             <i class="fa-solid fa-circle-plus"></i>
             <v-icon icon="fa-check" />
             <v-icon icon="fas fa-home" />
             <font-awesome-icon :icon="['fas', 'code']" />Add Task</v-btn
           >
+           <!-- Cancel button -->
           <v-btn color="red" @click="cancelAddTask">Cancel</v-btn>
         </v-form>
       </v-card-text>
@@ -50,15 +49,34 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, defineProps } from 'vue';
 
-// Define emits for emitting events
-const emits = defineEmits(['add-task', 'no-task']);
-// Define a ref for tracking form submission
-const formSubmitted = ref(false);
+// get a value from App.vue 
+const props = defineProps({
+  dataFromParent: String, // Define the type of the prop
+  isAddOrEdit: String
+});
 
 // Define a reactive variable for the visibility of the add task dialog
 const isAddDialogVisible = ref(true);
+
+
+// Define emits for emitting events
+const emits = defineEmits(['add-task', 'no-task', 'update:isAddDialog', 'update:isEditDialog']);
+// Define a ref for tracking form submission
+const formSubmitted = ref(false);
+
+// Define reactive variables for isAddDialog and isEditDialog
+const isAddDialog = ref(true);
+const isEditDialog = ref(false);
+
+const onIsAddDialogChange = (value) => {
+  isAddDialog.value = value;
+};
+
+const onIsEditDialogChange = (value) => {
+  isEditDialog.value = value;
+};
 
 // Define a reactive object for the new task
 const newTask = ref({
@@ -72,6 +90,7 @@ const newTask = ref({
 const addTask = () => {
   // Set formSubmitted to true to indicate form submission
   formSubmitted.value = true;
+  //isAddOrEdit = "Add Task from app";
 
   // If the form is valid, emit 'add-task' event
   if (
