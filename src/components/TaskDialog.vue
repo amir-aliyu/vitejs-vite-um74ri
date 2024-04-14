@@ -97,7 +97,7 @@ const uniqueTitle = (newTask, tableRows) => {
     if (newTask.value.title == tableRows[i].title) {
       
       isTitleUnique.value = false;
-      alert("title not unique" + isTitleUnique.value)
+     
       return false;
     }
   }

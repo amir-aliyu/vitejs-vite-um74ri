@@ -167,7 +167,7 @@ const openAddTaskDialog = (isAdd, index) => {
     isAddOrEdit.value = "Edit Task";
     taskIndex.value = index;
     whichIcon.value = "mdi mdi-update";
-   // alert("task index=" + index + "and task index value "+ taskIndex.value);
+   
   }
  
 };
