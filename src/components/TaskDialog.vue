@@ -34,6 +34,7 @@
           v-show="isAddDialog" 
             v-model="newTask.deadline"
             label="Deadline"
+            :rules="[() => !!newTask.deadline.trim() || 'Deadline is required']"
             type="date"
           ></v-text-field>
 
@@ -85,6 +86,12 @@ const formSubmitted = ref(false);
 
 // check if the title's unique :3
 const isTitleUnique = ref(true);
+
+// check if there's a deadline
+const hasDeadline = ref(false);
+
+// check if there's a priority
+const hasPriority = ref(false);
 
 // Define reactive variables for isAddDialog and isEditDialog
 const isAddDialog = ref(true);
@@ -141,6 +148,18 @@ const newTaskIsValid = (newTask) => {
     return false;
 }
 
+const validateDeadline = (newTask) => {
+  if (newTask.value.deadline.trim() !== '') {
+    hasDeadline.value = true;
+    return true;
+  } else {
+    hasDeadline.value = false;
+    return false;
+  }
+}
+
+//const validatePriority = (newTask) => 
+
 // Method to add a new task
 const addTask = (index, showTitle, tableRows) => {
   // Set formSubmitted to true to indicate form submission
@@ -182,7 +201,8 @@ const addTask = (index, showTitle, tableRows) => {
     // title is shown, go thru add validation
     else if (showTitle) {
       if (
-          newTaskIsValid(newTask) && uniqueTitle(newTask, tableRows)
+          newTaskIsValid(newTask) && uniqueTitle(newTask, tableRows) 
+          && validateDeadline(newTask)
         ) {
           emits('add-task', {
             title: newTask.value.title,
