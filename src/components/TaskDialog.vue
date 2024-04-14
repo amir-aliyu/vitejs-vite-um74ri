@@ -19,6 +19,7 @@
             label="Title"
             :rules="[() => !!newTask.title.trim() || 'Title is required']"
           ></v-text-field>
+          {{ tableRows }}
           <!-- do not display title if it is not add -->
           <v-textarea
             v-model="newTask.description"
@@ -38,7 +39,7 @@
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
 
-          <v-btn color="primary" @click="addTask(taskIndex, showTitle)">
+          <v-btn color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
             <i class="fa-solid fa-circle-plus"></i>
             <v-icon icon="fa-check" />
             <v-icon icon="fas fa-home" />
@@ -62,8 +63,11 @@ const props = defineProps({
   whichButton: String,
   taskIndex: Number,
   addedOrUpdated: String,
-  showTitle: Boolean
+  showTitle: Boolean,
+  tableRows: Array
+  
 });
+
 
 // Define a reactive variable for the visibility of the add task dialog
 const isAddDialogVisible = ref(true);
@@ -95,12 +99,14 @@ const newTask = ref({
 });
 
 // Method to add a new task
-const addTask = (index, showTitle) => {
+const addTask = (index, showTitle, tableRows) => {
   // Set formSubmitted to true to indicate form submission
   //alert("task index from taskDialog's add task:" + taskIndex.value);
   formSubmitted.value = true;
   //isAddOrEdit = "Add Task from app";
-  alert(index + " title?" + showTitle);
+  //alert(index + " title?" + showTitle);
+  alert(index);
+  //alert("rows = "+ tableRows);
 
   // if the index is greater than -1, instead of pushing the task to the
   // array, instead edit the current task index
@@ -110,8 +116,9 @@ const addTask = (index, showTitle) => {
   // If the form is valid, emit 'add-task' event
     // If showTitle is false, set the newTask.title to its current title
     if (!showTitle) {
-    newTask.value.title = "default";
-   // alert(tableRows.value[index].title);
+    
+      newTask.value.title = tableRows[index].title;
+    
   }
 
   if (

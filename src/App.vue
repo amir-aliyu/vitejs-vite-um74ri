@@ -24,6 +24,7 @@
   :isEditDialog="isEditDialog" 
   :showTitle = "showTitle"
   :addedOrUpdated = "addedOrUpdated"
+  :tableRows = "tableRows"
  
   @update:isAddDialog="isAddDialog = $event" 
   @update:isEditDialog="isEditDialog = $event" 
