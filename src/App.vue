@@ -22,6 +22,8 @@
   :isAddOrEdit = "isAddOrEdit"
   :isAddDialog= "isAddDialog" 
   :isEditDialog="isEditDialog" 
+  :showTitle = "showTitle"
+  :addedOrUpdated = "addedOrUpdated"
  
   @update:isAddDialog="isAddDialog = $event" 
   @update:isEditDialog="isEditDialog = $event" 
@@ -48,6 +50,7 @@
     </nav>
 
     <table class="table">
+      <!-- headers for if its an add task -->
       <thead class="bg-primary text-white">
         <tr>
           <th v-for="(header, index) in tableHeaders" :key="index">
@@ -55,6 +58,7 @@
           </th>
         </tr>
       </thead>
+      
       <tbody>
         <tr v-for="(row, rowIndex) in tableRows" :key="rowIndex">
           <!-- Loop through row cells -->
@@ -108,6 +112,8 @@ import 'vuetify/dist/vuetify.min.css';
 const dataToSendToChild = 'Data from App.vue!!';
 //const isAddOrEdit = "Add Task";
 
+
+
 // Snackbar state
 const snackbar = ref({
   show: false,
@@ -152,6 +158,12 @@ const isEditDialog = ref(true);
 
 const isAddDialog = ref(true);
 
+// determine whether or not to add title
+const showTitle = ref(true);
+
+// say it was added or updated successfully
+const addedOrUpdated = ref("added");
+
 // Define your table rows data
 const tableRows = ref([]);
 
@@ -159,14 +171,18 @@ const tableRows = ref([]);
 const openAddTaskDialog = (isAdd, index) => {
   isAddDialogOpen.value = true;
   if(isAdd) {
+    showTitle.value = true;
     whichButton.value = "Add";
+    addedOrUpdated.value = "added";
     isAddOrEdit.value = "Add Task";
     taskIndex.value = -1;
   } else {
+    showTitle.value = false;
     whichButton.value = "Edit";
+    addedOrUpdated.value = "edited";
     isAddOrEdit.value = "Edit Task " + index;
     taskIndex.value = index;
-    alert("task index=" + index + "and task index value "+ taskIndex.value);
+   // alert("task index=" + index + "and task index value "+ taskIndex.value);
   }
   
  // isEditDialog.value = isEdit;
@@ -201,12 +217,17 @@ const addTask = (task, index) => {
     //alert("app thinks task index is: "+ taskIndex.value);
   } else {
 
-    alert("this is an editing operation my friend");
+    //alert("this is an editing operation my friend");
     tableRows.value[taskIndex.value] = task;
   }
   
   closeAddTaskDialog();
-  showSnackbar('Task added successfully', 'success');
+  if (whichButton.value == "Add") {
+    showSnackbar('Task added successfully', 'success');
+  } else {
+    showSnackbar('Task updated successfully', 'success');
+  }
+  
 };
 
 // Method to handle adding task

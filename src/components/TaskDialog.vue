@@ -11,15 +11,19 @@
         <v-form @submit.prevent="addTask">
            <!-- Print the value of dataFromParent -->
            <p>{{ dataFromParent }}</p>
-          <v-text-field
+           <!-- add a title if its add title-->
+          {{showTitle}}
+           <v-text-field
+            v-show="showTitle"
             v-model="newTask.title"
             label="Title"
             :rules="[() => !!newTask.title.trim() || 'Title is required']"
           ></v-text-field>
+          <!-- do not display title if it is not add -->
           <v-textarea
             v-model="newTask.description"
             label="Description"
-            :rules="[() => !!newTask.title.trim() || 'Title is required']"
+            :rules="[() => !!newTask.title.trim() || 'Description is required']"
           ></v-textarea>
           <v-text-field
           v-show="isAddDialog" 
@@ -34,7 +38,7 @@
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
 
-          <v-btn color="primary" @click="addTask(taskIndex)">
+          <v-btn color="primary" @click="addTask(taskIndex, showTitle)">
             <i class="fa-solid fa-circle-plus"></i>
             <v-icon icon="fa-check" />
             <v-icon icon="fas fa-home" />
@@ -56,7 +60,9 @@ const props = defineProps({
   dataFromParent: String, // Define the type of the prop
   isAddOrEdit: String,
   whichButton: String,
-  taskIndex: Number
+  taskIndex: Number,
+  addedOrUpdated: String,
+  showTitle: Boolean
 });
 
 // Define a reactive variable for the visibility of the add task dialog
@@ -89,17 +95,25 @@ const newTask = ref({
 });
 
 // Method to add a new task
-const addTask = (index) => {
+const addTask = (index, showTitle) => {
   // Set formSubmitted to true to indicate form submission
   //alert("task index from taskDialog's add task:" + taskIndex.value);
   formSubmitted.value = true;
   //isAddOrEdit = "Add Task from app";
-  alert(index);
+  alert(index + " title?" + showTitle);
 
   // if the index is greater than -1, instead of pushing the task to the
   // array, instead edit the current task index
+   // If showTitle is false, set the newTask.title to its current title
+   
 
   // If the form is valid, emit 'add-task' event
+    // If showTitle is false, set the newTask.title to its current title
+    if (!showTitle) {
+    newTask.value.title = "default";
+   // alert(tableRows.value[index].title);
+  }
+
   if (
     newTask.value.title.trim() !== '' &&
     newTask.value.description.trim() !== ''
