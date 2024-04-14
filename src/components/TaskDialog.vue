@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isAddDialogVisible" max-width="500px">
+  <v-dialog v-model="isAddDialogVisible" max-width="500px" persistent>
    
     <v-card>
       
@@ -16,16 +16,21 @@
            <v-text-field
             v-show="showTitle"
             v-model="newTask.title"
+            class="title-input"
             label="Title"
+            :class="{'error-input': !isTitleUnique}"
             :rules="[() => !!newTask.title.trim() || 'Title is required']"
           ></v-text-field>
-          {{ tableRows }}
+           <!--make sure its unique tho-->
+           <span v-if="!isTitleUnique" class="error-message">Title must be unique</span>
+       
           <!-- do not display title if it is not add -->
           <v-textarea
             v-model="newTask.description"
             label="Description"
             :rules="[() => !!newTask.title.trim() || 'Description is required']"
           ></v-textarea>
+         
           <v-text-field
           v-show="isAddDialog" 
             v-model="newTask.deadline"
@@ -33,12 +38,13 @@
             type="date"
           ></v-text-field>
 
+          
           <v-radio-group v-model="newTask.priority" row>
             <v-radio value="High" label="High"></v-radio>
             <v-radio value="Medium" label="Medium"></v-radio>
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
-
+ 
           <v-btn color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
             <i class="fa-solid fa-circle-plus"></i>
             <v-icon icon="fa-check" />
@@ -78,6 +84,9 @@ const emits = defineEmits(['add-task', 'no-task', 'update:isAddDialog', 'update:
 // Define a ref for tracking form submission
 const formSubmitted = ref(false);
 
+// check if the title's unique :3
+const isTitleUnique = ref(true);
+
 // Define reactive variables for isAddDialog and isEditDialog
 const isAddDialog = ref(true);
 const isEditDialog = ref(false);
@@ -98,6 +107,37 @@ const newTask = ref({
   priority: '',
 });
 
+
+
+const checkTitleUnique = (task, tableRows) => {
+  tableRows.value.forEach((title) => {
+    alert("um");
+    // check if input task title is the same as any title in table rows
+    if (task.title === title) {
+      alert("Duplicate found");
+    } 
+  });
+};
+
+const uniqueTitle = (newTask, tableRows) => {
+  for(let i = 0; i < tableRows.length; i++) {
+    if (newTask.value.title == tableRows[i].title) {
+      alert("title not unique")
+      return false;
+    }
+  }
+  return true;
+}
+
+const newTaskIsValid = (newTask) => {
+  if (newTask.value.title.trim() !== '' &&
+    newTask.value.description.trim() !== '' ) {
+      return true;
+    } else
+    
+    return false;
+}
+
 // Method to add a new task
 const addTask = (index, showTitle, tableRows) => {
   // Set formSubmitted to true to indicate form submission
@@ -105,7 +145,7 @@ const addTask = (index, showTitle, tableRows) => {
   formSubmitted.value = true;
   //isAddOrEdit = "Add Task from app";
   //alert(index + " title?" + showTitle);
-  alert(index);
+  //alert(index);
   //alert("rows = "+ tableRows);
 
   // if the index is greater than -1, instead of pushing the task to the
@@ -116,33 +156,52 @@ const addTask = (index, showTitle, tableRows) => {
   // If the form is valid, emit 'add-task' event
     // If showTitle is false, set the newTask.title to its current title
     if (!showTitle) {
-    
+      alert(tableRows[index].title);
       newTask.value.title = tableRows[index].title;
-    
-  }
 
-  if (
-    newTask.value.title.trim() !== '' &&
-    newTask.value.description.trim() !== ''
-  ) {
-    emits('add-task', {
-      title: newTask.value.title,
-      description: newTask.value.description,
-      deadline: newTask.value.deadline,
-      priority: newTask.value.priority,
-    });
-    // Clear the new task data
-    newTask.value.title = '';
-    newTask.value.description = '';
-    newTask.value.deadline = '';
-    newTask.value.priority = '';
-    // Close the dialog
-    isAddDialogVisible.value = false;
-    // Reset formSubmitted flag
-    formSubmitted.value = true;
-  } else {
-    // Set formSubmitted to true to indicate form submission
-  }
+      // update the task accordingly with new values
+      emits('add-task', {
+            title: newTask.value.title,
+            description: newTask.value.description,
+            deadline: newTask.value.deadline,
+            priority: newTask.value.priority,
+          });
+          // Clear the new task data
+          newTask.value.title = '';
+          newTask.value.description = '';
+          newTask.value.deadline = '';
+          newTask.value.priority = '';
+          // Close the dialog
+          isAddDialogVisible.value = false;
+          // Reset formSubmitted flag
+          formSubmitted.value = true;
+    } 
+    // title is shown, go thru add validation
+    else if (showTitle) {
+      if (
+          newTaskIsValid(newTask) && uniqueTitle(newTask, tableRows)
+        ) {
+          emits('add-task', {
+            title: newTask.value.title,
+            description: newTask.value.description,
+            deadline: newTask.value.deadline,
+            priority: newTask.value.priority,
+          });
+          // Clear the new task data
+          newTask.value.title = '';
+          newTask.value.description = '';
+          newTask.value.deadline = '';
+          newTask.value.priority = '';
+          // Close the dialog
+          isAddDialogVisible.value = false;
+          // Reset formSubmitted flag
+          formSubmitted.value = true;
+        } else {
+          // add error message to the title textbox
+        // document.querySelector('.title-input').classList.add('error-input');
+        }
+    }
+  
 };
 
 // Method to cancel adding a task

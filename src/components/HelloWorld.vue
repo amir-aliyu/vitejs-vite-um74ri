@@ -6,7 +6,7 @@ defineProps({
 });
 
 const count = ref(0);
-const message = ref('mymessage');
+const message = ref('FRAMEWORKS');
 
 const changeMessage = () => {
   if (message.value == 'mymessage') {
