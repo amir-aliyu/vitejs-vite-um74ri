@@ -1,65 +1,45 @@
 <template>
-  <div>
-    <nav class="navbar navbar-dark bg-primary">
-      <div class="container-fluid">
-        <span class="navbar-brand">FRAMEWORKS</span>
-        <v-icon>fas fa-code</v-icon>
-        <button class="btn btn-primary" @click="openAddTaskDialog">
-          <i class="bi bi-plus"></i> Add
-        </button>
-        <button class="btn btn-primary" @click="addSampleTask">
-          <i class="bi bi-plus"></i> new sample task
-        </button>
+  <v-container>
+
+      <v-banner bg-color="primary" id="top-banner" class="my-4">
+        
+        <h4 id="frameworks"><v-app-bar-nav-icon></v-app-bar-nav-icon>
+          FRAMEWORKS</h4>
+        <div class="col-md-6">
+          <v-btn prepend-icon="mdi-plus" color="primary"  @click="openAddTaskDialog">
+            Add
+          </v-btn></div>
+    </v-banner>
 
         <TaskDialog
-  v-if="isAddDialogOpen"
-  @add-task="addTask"
-  @no-task="closeAddTaskDialog"
-  @close="closeAddTaskDialog"
-  :data-from-parent="dataToSendToChild"
-  :whichButton = "whichButton"
-  :taskIndex = "taskIndex"
-  :isAddOrEdit = "isAddOrEdit"
-  :isAddDialog= "isAddDialog" 
-  :isEditDialog="isEditDialog" 
-  :showTitle = "showTitle"
-  :addedOrUpdated = "addedOrUpdated"
-  :tableRows = "tableRows"
- 
-  @update:isAddDialog="isAddDialog = $event" 
-  @update:isEditDialog="isEditDialog = $event" 
-/>
-
-        <!-- TaskDialog Component -->
-        <!--<TaskDialog
           v-if="isAddDialogOpen"
           @add-task="addTask"
+          @no-task="closeAddTaskDialog"
           @close="closeAddTaskDialog"
-        />-->
-        <HelloWorld :changeMessage="changeMessage" />
+          :whichButton = "whichButton"
+          :taskIndex = "taskIndex"
+          :isAddOrEdit = "isAddOrEdit"
+          :isAddDialog= "isAddDialog" 
+          :isEditDialog="isEditDialog" 
+          :showTitle = "showTitle"
+          :addedOrUpdated = "addedOrUpdated"
+          :tableRows = "tableRows"
+          :whichIcon = "whichIcon"
+        
+          @update:isAddDialog="isAddDialog = $event" 
+          @update:isEditDialog="isEditDialog = $event" 
+        />
+    
 
-        <!-- Add v-snackbar component -->
-        <v-snackbar
-          v-model="snackbar.show"
-          :color="snackbar.color"
-          :timeout="snackbar.timeout"
-          class="custom-snackbar"
-        >
-          {{ snackbar.message }}
-        </v-snackbar>
-      </div>
-    </nav>
-
-    <table class="table">
+    <v-table>
       <!-- headers for if its an add task -->
-      <thead class="bg-primary text-white">
+      <thead>
         <tr>
           <th v-for="(header, index) in tableHeaders" :key="index">
             {{ header }}
           </th>
         </tr>
       </thead>
-      
       <tbody>
         <tr v-for="(row, rowIndex) in tableRows" :key="rowIndex">
           <!-- Loop through row cells -->
@@ -70,12 +50,12 @@
               <div class="col">
                 <template v-if="!row.isComplete">
                   <!--if the item is not complete, then can be edited-->
-                  <v-btn color="primary" @click="openAddTaskDialog(false, rowIndex)">
+                  <v-btn prepend-icon="mdi mdi-update" color="primary" @click="openAddTaskDialog(false, rowIndex)">
                     Update
                   </v-btn>
                 </template>
                 <!--can always delete tasks-->
-                <v-btn color="red" @click="deleteTask(rowIndex)">Delete</v-btn>
+                <v-btn prepend-icon="mdi mdi-close-circle-outline" color="red" @click="deleteTask(rowIndex)">Delete</v-btn>
               </div>
             </template>
             <template v-if="column.type === 'checkbox'">
@@ -95,25 +75,16 @@
           </td>
         </tr>
       </tbody>
-    </table>
-  </div>
+    </v-table>
+</v-container>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { createVuetify } from 'vuetify';
-import TableComponent from './components/TableComponent.vue';
 import TaskDialog from './components/TaskDialog.vue';
-//import TaskDialog from './components/TaskDialog.vue';
-import HelloWorld from './components/HelloWorld.vue';
-import { VCard, VCardText, VCardTitle } from 'vuetify/components/VCard';
 import 'vuetify/dist/vuetify.min.css';
 
-// testing can send data ovah 
-const dataToSendToChild = 'Data from App.vue!!';
 //const isAddOrEdit = "Add Task";
-
-
 
 // Snackbar state
 const snackbar = ref({
@@ -168,6 +139,8 @@ const addedOrUpdated = ref("added");
 // Define your table rows data
 const tableRows = ref([]);
 
+const whichIcon = ref("mdi-plus");
+
 // open task dialog, pass in whether it's an add task and index
 const openAddTaskDialog = (isAdd, index) => {
   isAddDialogOpen.value = true;
@@ -177,12 +150,14 @@ const openAddTaskDialog = (isAdd, index) => {
     addedOrUpdated.value = "added";
     isAddOrEdit.value = "Add Task";
     taskIndex.value = -1;
+    whichIcon.value = "mdi-plus";
   } else {
     showTitle.value = false;
     whichButton.value = "Edit";
     addedOrUpdated.value = "edited";
     isAddOrEdit.value = "Edit Task " + index;
     taskIndex.value = index;
+    whichIcon.value = "mdi mdi-close-circle-outline";
    // alert("task index=" + index + "and task index value "+ taskIndex.value);
   }
   
@@ -203,9 +178,6 @@ const sampleTask = {
   isComplete: false,
   action: '',
 };
-
-
-
 
 // Method to handle adding task
 const addTask = (task, index) => {
@@ -231,30 +203,6 @@ const addTask = (task, index) => {
   
 };
 
-// Method to handle adding task
-const noTask = () => {
-  closeAddTaskDialog();
-};
-
-
-// Method to handle updating task
-// Method to handle updating task
-const updateTask = (task, index) => {
-  isAddOrEdit = "Update Task";
-  //isEditDialog = true;
-  console.log(dataToSendToChild);
-  alert("update task" + index)
-  // Set isEditDialog to true for editing
-  //emits('update:isEditDialog', true);
-  //openAddTaskDialog(false); // Pass true to indicate it's an edit dialog
-  //console.log('task' + index + ' is to be updated');
- // isEditDialog.value = true;
- // console.log(task);
- // console.log(tableRows.value[index]);
- // tableRows.value[index] = task;
-  // Emit event to update isEditDialog in TaskDialog.vue
- 
-};
 
 const deleteTask = (index) => {
   tableRows.value.splice(index, 1);
@@ -262,12 +210,6 @@ const deleteTask = (index) => {
   showSnackbar('Task deleted successfully', 'success');
 
   console.log('task' + index + 'must be deleted with extreme prejudice');
-};
-
-// Method to add sample task
-const addSampleTask = () => {
-  // this.$toastr.success('Task deleted successfully');
-  addTask(sampleTask);
 };
 
 // Method to update task completion
@@ -284,21 +226,6 @@ const updateCompletion = (index) => {
   );
 };
 
-//import EditTaskDialog from './components/EditTaskDialog.vue';
-
-// Define ref for isEditDialogOpen
-const isEditDialogOpen = ref(false);
-
-// Method to open the edit task dialog
-const openEditTaskDialog = (index) => {
-  // Implement logic to open the dialog with the task data at the specified index
-  isEditDialogOpen.value = true;
-};
-
-// Method to close the edit task dialog
-const closeEditTaskDialog = () => {
-  isEditDialogOpen.value = false;
-};
 
 // Method to show the snackbar notification
 const showSnackbar = (message, color) => {
@@ -314,6 +241,16 @@ const showSnackbar = (message, color) => {
   bottom: 20px; /* Adjust as needed */
   left: 150px; /* Adjust as needed */
   z-index: 9999; /* Ensure it appears above other content */
+}
+#top-banner {
+  color:blue;
+}
+#frameworks {
+  margin-left: 11em;
+  margin-right:6em;
+  font-size: 20;
+  text-align: center;
+ 
 }
 /* No need for additional styles as we're using Bootstrap */
 </style>

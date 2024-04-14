@@ -3,16 +3,11 @@
    
     <v-card>
       
-     
       <v-card-title>
         <span class="headline">{{ isAddOrEdit }}</span>
       </v-card-title>
       <v-card-text >
         <v-form @submit.prevent="addTask">
-           <!-- Print the value of dataFromParent -->
-           <p>{{ dataFromParent }}</p>
-           <!-- add a title if its add title-->
-          {{showTitle}}
            <v-text-field
             v-show="showTitle"
             v-model="newTask.title"
@@ -26,7 +21,6 @@
             label="Description"
             :rules="[() => !!newTask.description.trim() || 'Description is required']"
           ></v-textarea>
-
          
           <v-text-field
           v-show="isAddDialog" 
@@ -43,14 +37,11 @@
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
  
-          <v-btn type="submit" color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
-            <i class="fa-solid fa-circle-plus"></i>
-            <v-icon icon="fa-check" />
-            <v-icon icon="fas fa-home" />
-            <font-awesome-icon :icon="['fas', 'code']" />{{ whichButton }}</v-btn
+          <v-btn :prepend-icon="whichIcon" type="submit" color="primary" @click="addTask(taskIndex, showTitle,tableRows)">
+            {{ whichButton }}</v-btn
           >
            <!-- Cancel button -->
-          <v-btn color="red" @click="cancelAddTask">Cancel</v-btn>
+          <v-btn color="red" prepend-icon="mdi mdi-close-circle-outline" @click="cancelAddTask">Cancel</v-btn>
         </v-form>
       </v-card-text>
     </v-card>
@@ -60,18 +51,16 @@
 <script setup>
 import { ref, defineEmits, defineProps } from 'vue';
 
-// get a value from App.vue 
+// props
 const props = defineProps({
-  dataFromParent: String, // Define the type of the prop
   isAddOrEdit: String,
   whichButton: String,
   taskIndex: Number,
   addedOrUpdated: String,
   showTitle: Boolean,
-  tableRows: Array
-  
+  tableRows: Array,
+  whichIcon: String
 });
-
 
 // Define a reactive variable for the visibility of the add task dialog
 const isAddDialogVisible = ref(true);
@@ -114,7 +103,6 @@ const newTask = ref({
   priority: '',
 });
 
-
 const checkTitleUnique = (task, tableRows) => {
   tableRows.value.forEach((title) => {
     alert("um");
@@ -124,8 +112,6 @@ const checkTitleUnique = (task, tableRows) => {
     } 
   });
 };
-
-
 
 const uniqueTitle = (newTask, tableRows) => {
   for(let i = 0; i < tableRows.length; i++) {
