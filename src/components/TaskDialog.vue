@@ -63,7 +63,6 @@ const props = defineProps({
 // Define a reactive variable for the visibility of the add task dialog
 const isAddDialogVisible = ref(true);
 
-
 // Define emits for emitting events
 const emits = defineEmits(['add-task', 'no-task', 'update:isAddDialog', 'update:isEditDialog']);
 // Define a ref for tracking form submission
@@ -187,6 +186,8 @@ const addTask = (index, showTitle, tableRows) => {
           isAddDialogVisible.value = false;
           // Reset formSubmitted flag
           formSubmitted.value = true;
+
+          showSnackbar('Task updated successfully', 'success');
         }
     } 
     // title is shown, go thru add validation
@@ -210,6 +211,12 @@ const addTask = (index, showTitle, tableRows) => {
           isAddDialogVisible.value = false;
           // Reset formSubmitted flag
           formSubmitted.value = true;
+          
+          showSnackbar('Task added successfully', 'success');
+
+   
+
+
         } else {
           // add error message to the title textbox
          //document.querySelector('.title-input').classList.add('error-input');

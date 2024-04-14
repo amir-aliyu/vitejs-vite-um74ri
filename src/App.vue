@@ -30,6 +30,17 @@
           @update:isEditDialog="isEditDialog = $event" 
         />
     
+         <!-- Add v-snackbar component -->
+         <v-snackbar
+          v-model="snackbar.show"
+          :color="snackbar.color"
+          :timeout="snackbar.timeout"
+          class="custom-snackbar"
+        >
+          {{ snackbar.message }}
+        </v-snackbar>
+
+
 
     <v-table>
       <!-- headers for if its an add task -->
@@ -169,16 +180,6 @@ const closeAddTaskDialog = () => {
   isAddDialogOpen.value = false;
 };
 
-// Sample task data
-const sampleTask = {
-  title: 'Sample Task',
-  description: 'This is a sample task description from app',
-  deadline: '2024-04-30',
-  priority: 'High',
-  isComplete: false,
-  action: '',
-};
-
 // Method to handle adding task
 const addTask = (task, index) => {
   //taskIndex.value = index;
@@ -199,7 +200,6 @@ const addTask = (task, index) => {
   }
   
 };
-
 
 const deleteTask = (index) => {
   tableRows.value.splice(index, 1);
