@@ -16,19 +16,17 @@
            <v-text-field
             v-show="showTitle"
             v-model="newTask.title"
-         
             label="Title"
-            
             :rules="[() => !!newTask.title.trim() || 'Title is required', () => isTitleUnique.value || 'Title must be unique']"
           ></v-text-field>
       
-       
           <!-- do not display title if it is not add -->
           <v-textarea
             v-model="newTask.description"
             label="Description"
-            :rules="[() => !!newTask.title.trim() || 'Description is required']"
+            :rules="[() => !!newTask.description.trim() || 'Description is required']"
           ></v-textarea>
+
          
           <v-text-field
           v-show="isAddDialog" 
@@ -38,8 +36,8 @@
             type="date"
           ></v-text-field>
 
-          
-          <v-radio-group v-model="newTask.priority" row>
+          <v-radio-group v-model="newTask.priority" row
+          :rules="[() => !!newTask.priority.trim() || 'Priority is required']">
             <v-radio value="High" label="High"></v-radio>
             <v-radio value="Medium" label="Medium"></v-radio>
             <v-radio value="Low" label="Low"></v-radio>
@@ -86,6 +84,9 @@ const formSubmitted = ref(false);
 
 // check if the title's unique :3
 const isTitleUnique = ref(true);
+
+// check if there's a description
+const hasDescription = ref(false);
 
 // check if there's a deadline
 const hasDeadline = ref(false);
@@ -148,6 +149,17 @@ const newTaskIsValid = (newTask) => {
     return false;
 }
 
+const validateDescription = (newTask) => {
+  if (newTask.value.description.trim() !== '') {
+    hasDescription.value = true;
+    return true;
+  } else {
+    hasDescription.value = false;
+    return false;
+  }
+}
+
+
 const validateDeadline = (newTask) => {
   if (newTask.value.deadline.trim() !== '') {
     hasDeadline.value = true;
@@ -158,7 +170,16 @@ const validateDeadline = (newTask) => {
   }
 }
 
-//const validatePriority = (newTask) => 
+const validatePriority = (newTask) => {
+  if (newTask.value.priority.trim() !== '') {
+    hasPriority.value = true;
+    return true;
+  } else {
+    hasPriority.value = false;
+    return false;
+  }
+}
+
 
 // Method to add a new task
 const addTask = (index, showTitle, tableRows) => {
@@ -178,10 +199,17 @@ const addTask = (index, showTitle, tableRows) => {
   // If the form is valid, emit 'add-task' event
     // If showTitle is false, set the newTask.title to its current title
     if (!showTitle) {
-      alert(tableRows[index].title);
+     // alert(tableRows[index].title);
       newTask.value.title = tableRows[index].title;
 
+      // validate entries 
       // update the task accordingly with new values
+
+      if (
+        validateDescription(newTask) && 
+        validateDeadline(newTask) && 
+        validatePriority(newTask)
+        ) {
       emits('add-task', {
             title: newTask.value.title,
             description: newTask.value.description,
@@ -197,12 +225,13 @@ const addTask = (index, showTitle, tableRows) => {
           isAddDialogVisible.value = false;
           // Reset formSubmitted flag
           formSubmitted.value = true;
+        }
     } 
     // title is shown, go thru add validation
     else if (showTitle) {
       if (
           newTaskIsValid(newTask) && uniqueTitle(newTask, tableRows) 
-          && validateDeadline(newTask)
+          && validateDeadline(newTask) && validatePriority(newTask)
         ) {
           emits('add-task', {
             title: newTask.value.title,
