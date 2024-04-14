@@ -34,11 +34,11 @@
             <v-radio value="Low" label="Low"></v-radio>
           </v-radio-group>
 
-          <v-btn color="primary" @click="addTask">
+          <v-btn color="primary" @click="addTask(taskIndex)">
             <i class="fa-solid fa-circle-plus"></i>
             <v-icon icon="fa-check" />
             <v-icon icon="fas fa-home" />
-            <font-awesome-icon :icon="['fas', 'code']" />Add Task</v-btn
+            <font-awesome-icon :icon="['fas', 'code']" />{{ whichButton }}</v-btn
           >
            <!-- Cancel button -->
           <v-btn color="red" @click="cancelAddTask">Cancel</v-btn>
@@ -54,7 +54,9 @@ import { ref, defineEmits, defineProps } from 'vue';
 // get a value from App.vue 
 const props = defineProps({
   dataFromParent: String, // Define the type of the prop
-  isAddOrEdit: String
+  isAddOrEdit: String,
+  whichButton: String,
+  taskIndex: Number
 });
 
 // Define a reactive variable for the visibility of the add task dialog
@@ -87,10 +89,15 @@ const newTask = ref({
 });
 
 // Method to add a new task
-const addTask = () => {
+const addTask = (index) => {
   // Set formSubmitted to true to indicate form submission
+  //alert("task index from taskDialog's add task:" + taskIndex.value);
   formSubmitted.value = true;
   //isAddOrEdit = "Add Task from app";
+  alert(index);
+
+  // if the index is greater than -1, instead of pushing the task to the
+  // array, instead edit the current task index
 
   // If the form is valid, emit 'add-task' event
   if (

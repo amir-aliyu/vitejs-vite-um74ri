@@ -17,8 +17,10 @@
   @no-task="closeAddTaskDialog"
   @close="closeAddTaskDialog"
   :data-from-parent="dataToSendToChild"
+  :whichButton = "whichButton"
+  :taskIndex = "taskIndex"
   :isAddOrEdit = "isAddOrEdit"
-  :isAddDialog="isAddDialog" 
+  :isAddDialog= "isAddDialog" 
   :isEditDialog="isEditDialog" 
  
   @update:isAddDialog="isAddDialog = $event" 
@@ -137,7 +139,13 @@ const tableColumns = [
 // Define ref for isAddDialogOpen
 const isAddDialogOpen = ref(false);
 
+// const to check wether its an add or edit
 const isAddOrEdit = ref("Add Task default");
+
+// reference for which button it is
+const whichButton = ref("Add");
+
+const taskIndex = ref(0);
 
 // Define whether it's an add or edit dialog
 const isEditDialog = ref(true);
@@ -147,14 +155,18 @@ const isAddDialog = ref(true);
 // Define your table rows data
 const tableRows = ref([]);
 
-// Method to open the add task dialog
-// Method to open the add task dialog
-const openAddTaskDialog = (isEdit, index) => {
+// open task dialog, pass in whether it's an add task and index
+const openAddTaskDialog = (isAdd, index) => {
   isAddDialogOpen.value = true;
-  if(isEdit) {
+  if(isAdd) {
+    whichButton.value = "Add";
     isAddOrEdit.value = "Add Task";
+    taskIndex.value = -1;
   } else {
+    whichButton.value = "Edit";
     isAddOrEdit.value = "Edit Task " + index;
+    taskIndex.value = index;
+    alert("task index=" + index + "and task index value "+ taskIndex.value);
   }
   
  // isEditDialog.value = isEdit;
@@ -175,12 +187,24 @@ const sampleTask = {
   action: '',
 };
 
+
+
+
 // Method to handle adding task
-const addTask = (task) => {
+const addTask = (task, index) => {
+  //taskIndex.value = index;
   isAddOrEdit.value = "Add Task from app.vue";
   isAddDialog.value = true; // Corrected
   isEditDialog.value = false; // Corrected
-  tableRows.value.push(task);
+  if(taskIndex.value < 0) {
+    tableRows.value.push(task);
+    //alert("app thinks task index is: "+ taskIndex.value);
+  } else {
+
+    alert("this is an editing operation my friend");
+    tableRows.value[taskIndex.value] = task;
+  }
+  
   closeAddTaskDialog();
   showSnackbar('Task added successfully', 'success');
 };
