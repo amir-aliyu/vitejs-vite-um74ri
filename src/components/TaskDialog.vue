@@ -2,6 +2,7 @@
   <v-dialog v-model="isAddDialogVisible" max-width="500px" persistent>
    
     <v-card>
+      <v-container>
         <v-banner :icon ="whichIcon" id="taskBanner" bg-color="primary" lines="one">
             <div id="taskText">{{ isAddOrEdit }}</div> </v-banner>
       <v-card-text >
@@ -42,7 +43,9 @@
           <v-btn id="cancel" color="red" prepend-icon="mdi mdi-close-circle-outline" @click="cancelAddTask">Cancel</v-btn>
         </v-form>
       </v-card-text>
+    </v-container>
     </v-card>
+  
   </v-dialog>
 </template>
 
@@ -241,6 +244,7 @@ const cancelAddTask = () => {
  
 }
 #taskText {
+  font-size: 25px;
   margin-left: 1em;
   margin-right:5em;
 }
